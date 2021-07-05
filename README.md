@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @mhlaghari
-- 👀 I’m interested in becoming a data scientist
+- 👀 I’m an aspiring data scientist
 - 🌱 I’m currently doing my MSBA from NYU Stern
 - 📫 How to reach me:
    email: mhlaghari@gmail.com
