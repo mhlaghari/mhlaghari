@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @mhlaghari
-- 👀 I’m an aspiring data scientist
-- 🌱 I’m currently doing my MSBA from NYU Stern
+- 👀 Data scientist
+- 🌱 MSBA Graduate | NYU Alumnus
 - 📫 How to reach me:
    email: mhlaghari@gmail.com
    linkedin: https://www.linkedin.com/in/mhlaghari
