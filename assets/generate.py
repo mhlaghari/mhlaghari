@@ -92,7 +92,8 @@ def wrap(text, fs, maxw, ls=0.0):
     return lines
 
 
-def shell(h: int, T: dict, body: str, fonts: tuple, extra_defs: str = "", w: int = W) -> str:
+def shell(h: int, T: dict, body: str, fonts: tuple, extra_defs: str = "", w: int = W,
+          opaque: bool = True) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img">'
@@ -102,7 +103,8 @@ def shell(h: int, T: dict, body: str, fonts: tuple, extra_defs: str = "", w: int
         f".b{{font-family:'PlexMono',ui-monospace,monospace}}"
         f".m{{font-family:'PlexMonoM','PlexMono',ui-monospace,monospace}}"
         f"</style>"
-        f'<rect width="{w}" height="{h}" fill="{T["bg"]}"/>{body}</svg>'
+        + (f'<rect width="{w}" height="{h}" fill="{T["bg"]}"/>' if opaque else "")
+        + f"{body}</svg>"
     )
 
 
@@ -340,16 +342,16 @@ def timeline(T, rows):
     return shell(H, T, b, ("display", "body", "bodym"))
 
 
-def button(T, text, accent, fs=14, ls=0.08):
-    """tokens.css .btn — a pixel button sized to its label."""
+def button(text, accent, fs=14, ls=0.08):
+    """tokens.css .btn, pinned to ink lines so one file works on either theme."""
     bw, bh, off = 36 + tw(text, fs, ls), 44, 6
     w, h = int(bw + off + 4), bh + off + 4
-    b = f'<rect x="{off}" y="{off}" width="{bw:.0f}" height="{bh}" fill="{T["line"]}"/>'
+    b = f'<rect x="{off}" y="{off}" width="{bw:.0f}" height="{bh}" fill="{ON_ACC}"/>'
     b += (f'<rect x="0" y="0" width="{bw:.0f}" height="{bh}" fill="{accent}" '
-          f'stroke="{T["line"]}" stroke-width="3"/>')
+          f'stroke="{ON_ACC}" stroke-width="3"/>')
     b += (f'<text class="m" x="{bw / 2:.0f}" y="{bh / 2 + fs * 0.36:.1f}" font-size="{fs}" '
           f'text-anchor="middle" letter-spacing="{ls}em" fill="{ON_ACC}">{esc(text)}</text>')
-    return shell(h, T, b, ("bodym",), w=w)
+    return shell(h, LIGHT, b, ("bodym",), w=w, opaque=False)
 
 
 def stats(T, tiles, langs):
@@ -539,9 +541,6 @@ def main():
         for name, fn in (("hero", hero), ("footer", footer), ("quote", quote)):
             (out / f"{name}-{mode}.svg").write_text(fn(T))
             written.append(out / f"{name}-{mode}.svg")
-        for slug, label, col in buttons:
-            (out / f"btn-{slug}-{mode}.svg").write_text(button(T, label, col))
-            written.append(out / f"btn-{slug}-{mode}.svg")
         for slug, title, accent in HEADERS:
             (out / f"hdr-{slug}-{mode}.svg").write_text(header(T, title, accent))
             written.append(out / f"hdr-{slug}-{mode}.svg")
@@ -555,6 +554,10 @@ def main():
             written.append(out / f"{name}-{mode}.svg")
         (out / f"stats-{mode}.svg").write_text(stats(T, STAT_TILES, LANGS))
         written.append(out / f"stats-{mode}.svg")
+
+    for slug, label, col in buttons:
+        (out / f"btn-{slug}.svg").write_text(button(label, col))
+        written.append(out / f"btn-{slug}.svg")
 
     for stale in out.glob("*.svg"):
         if stale not in written:
