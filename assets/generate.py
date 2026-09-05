@@ -537,7 +537,7 @@ def main():
     written = []
     buttons = [("web", "LAGHARILABS.COM", A2), ("linkedin", "LINKEDIN", A4),
                ("email", "EMAIL", A1), ("notes", "FIELD NOTES", A5)]
-    for mode, T in (("light", LIGHT), ("dark", DARK)):
+    for mode, T in (("light", LIGHT),):
         for name, fn in (("hero", hero), ("footer", footer), ("quote", quote)):
             (out / f"{name}-{mode}.svg").write_text(fn(T))
             written.append(out / f"{name}-{mode}.svg")
